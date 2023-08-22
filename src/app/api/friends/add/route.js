@@ -8,12 +8,12 @@ import { getServerSession } from "next-auth/next"
 export async function POST(req) {
     const { email } = await req.json()
     console.log(email)
-    // const session = await getServerSession(authOptions)
-    // console.log("Route : ", session)
+    const session = await getServerSession(authOptions)
+    console.log("Route : ", session)
 
-    // if (!session) {
-    //     return new Response("Not Authorized", { status: 401 })
-    // }
+    if (!session) {
+        return new Response("Not Authorized", { status: 401 })
+    }
     await connectionDB()
     // check if the request is sent to itself 
     if (email === session.user.email) {

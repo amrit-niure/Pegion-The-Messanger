@@ -23,16 +23,36 @@ const areAlreadyFriends = session_user.friends.some(
 if (areAlreadyFriends) {
     return NextResponse.json({ status: 'success', message: `Your both are already friends` }, { status: 401 });
 }
-
+try {
     await Users.findByIdAndUpdate(
+        userId,
+        { $push: { friends: friendId } },
+        { new: true, useFindAndModify: false }
+      )
+      await Users.findByIdAndUpdate(
+        friendId,
+        { $push: { friends: userId } },
+        { new: true, useFindAndModify: false }
+        )
+    } catch (error) {
+        return NextResponse.json({message : "Error while writing to database"}, { status: 500 });
+    }
+    
+     // delete the incoming request of the sender after accepting the request
+  
+try {
+    const updatedUser = await Users.findByIdAndUpdate(
       userId,
-      { $push: { friends: friendId } },
-      { new: true, useFindAndModify: false }
-    )
-    await Users.findByIdAndUpdate(
-      friendId,
-      { $push: { friends: userId } },
-      { new: true, useFindAndModify: false }
-    )
+      { $pull: { incoming_request: friendId } },
+      { new: true }
+    );
+  
+    if (!updatedUser) {
+        return NextResponse.json({message : "User Not found !"}, { status: 404 });
+    } 
+  } catch (error) {
+    console.error("Error:", error);
+  }
     return NextResponse.json({message : "Friend Request Accepted!"}, { status: 200 });
+   
 }
