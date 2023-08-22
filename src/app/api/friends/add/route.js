@@ -8,12 +8,12 @@ import { getServerSession } from "next-auth/next"
 export async function POST(req) {
     const { email } = await req.json()
     console.log(email)
-    const session = await getServerSession(authOptions)
-    console.log("Route : ", session)
+    // const session = await getServerSession(authOptions)
+    // console.log("Route : ", session)
 
-    if (!session) {
-        return new Response("Not Authorized", { status: 401 })
-    }
+    // if (!session) {
+    //     return new Response("Not Authorized", { status: 401 })
+    // }
     await connectionDB()
     // check if the request is sent to itself 
     if (email === session.user.email) {
@@ -54,19 +54,7 @@ export async function POST(req) {
     if (AlreadyHasRequest) {
         return NextResponse.json({ status: 'success', message: `Your already have ${requestedUser.name} request!` }, { status: 401 });
     }
-    // const userId = session.user.id; // Replace with the actual user's ID
-    // const friendId = requestedUser._id; // Replace with the actual friend's ID
-    
-    // await Users.findByIdAndUpdate(
-    //   userId,
-    //   { $push: { friends: friendId } },
-    //   { new: true, useFindAndModify: false }
-    // )
-    // await Users.findByIdAndUpdate(
-    //   friendId,
-    //   { $push: { friends: userId } },
-    //   { new: true, useFindAndModify: false }
-    // )
+ 
     // check if they are already friends 
      const areFriends = session_user.friends.some(
         (request) => request._id.toString() === requestedUser._id.toString()
@@ -75,5 +63,5 @@ export async function POST(req) {
         return NextResponse.json({ status: 'success', message: `Your are already friends with ${requestedUser.name} ` }, { status: 401 });
     }
  await Users.findByIdAndUpdate(user.id, { $push: { incoming_request: session.user.id } }, { new: true, useFindAndModify: false })
-    return NextResponse.json({ status: 'success', message: `Request succesfully sent to ${requestedUser.name} ` }, { status: 401 });
+    return NextResponse.json({ status: 'success', message: `Request succesfully sent to ${requestedUser.name} ` }, { status: 200 });
 }
