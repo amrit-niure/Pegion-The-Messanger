@@ -42,13 +42,13 @@ const Layout = async ({ children }) => {
   if (!session) notFound();
   return (
     <div className="w-full flex h-screen">
-      <div className="flex h-full w-full  max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+      <div className="flex h-full w-full  max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r dark:border-r-slate-600 border-gray-200 bg-white dark:bg-slate-900 px-6">
         <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
           <SendHorizonal className="h-8 w-auto text-indigo-600" />
         </Link>
 
         {friends?.length > 0 && (
-          <div className="text-xs font-semibold leading-6 text-gray400 ">
+          <div className="text-xs dark:text-slate-200 font-semibold leading-6 text-gray400 ">
             Your Chats
           </div>
         )} 
@@ -61,14 +61,14 @@ const Layout = async ({ children }) => {
               <div className="text-sx font-semibold leading-6 text-gray-400">
                 Overview
               </div>
-              <ul role="list" className="-mx-2 mt-2 space-y-1">
+              <ul role="list" className="-mx-2 mt-2 space-y-1 ">
                 {sidebarOptions.map((option) => {
                   const Icon = option.Icon;
                   return (
                     <li key={option.id}>
                       <Link
                         href={option.href}
-                        className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-3 rounded-md p-2 text-sm font-semibold"
+                        className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-3 rounded-md p-2 text-sm font-semibold dark:text-slate-200 "
                       >
                         <span className="text-gray-400 border-200 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium">
                           <Icon className="h-4 w-4" />
@@ -100,7 +100,7 @@ const Layout = async ({ children }) => {
                   />
                 </div>
                 <span className="sr-only">Your Profile</span>
-                <div className="flex flex-col">
+                <div className="flex flex-col dark:text-slate-200">
                   <span aria-hidden="true">{session.user.name}</span>
                   <span className="text-xs text-zinc-400 " aria-hidden="true">
                     {session.user.email}
@@ -112,7 +112,7 @@ const Layout = async ({ children }) => {
           </ul>
         </nav>
       </div>
-      <div className='px-8'>
+      <div className='py-8 px-16 dark:bg-slate-900 w-full'>
 
         {children}
       </div>

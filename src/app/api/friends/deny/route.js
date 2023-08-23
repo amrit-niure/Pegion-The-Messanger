@@ -3,6 +3,7 @@ import Users from "@/modal/UserSchema";
 import { NextResponse } from "next/server"
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from "next-auth/next"
+import { pusherServer } from "@/lib/pusherServer";
 
 export async function POST(req) {
     const { id } = await req.json()
@@ -15,6 +16,7 @@ export async function POST(req) {
     const userId = session.user.id;
     const friendId = id;
     // delete the incoming request of the sender 
+    pusherServer.trigger("accept_deny_channel","accept_deny_event",{})
     try {
         const updatedUser = await Users.findByIdAndUpdate(
             userId,

@@ -44,7 +44,7 @@ const AddFriend = () => {
         }) => (
           <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
             <div className="flex flex-col gap-2 text-slate-900">
-              <div className='flex items-center justify-between pr-2 pl-1'>
+              <div className='flex items-center justify-between pr-2 pl-1 dark:text-slate-200'>
                 <label htmlFor="email" className='text-md  flex items-center '><AtSign size={15} />dd by Email</label>
 
               </div>
@@ -56,7 +56,7 @@ const AddFriend = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Email"
-                className={`px-[1rem] focus:outline-none border-2 py-[0.5rem] rounded-md text-light-primary`}
+                className={`px-[1rem] focus:outline-none border-2 py-[0.5rem] rounded-md text-light-primary dark:text-slate-200`}
               />
             </div>
             <Button type="submit" >Add</Button>

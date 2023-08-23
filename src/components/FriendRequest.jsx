@@ -18,22 +18,23 @@ const FriendRequests = ({
   )
 
   // realtime functionality
-
-  useEffect(() => {
-    pusherClient.subscribe('add_channel')
+  useEffect(() =>{
+    pusherClient.subscribe("add_channel")
     const friendRequestHandler = ({
-      _id,
-      email,
-      name
-    }) => {
-      setFriendRequests((prev) => [...prev, { _id ,email,name }])
-    }
-    pusherClient.bind("add_event", friendRequestHandler)
+     _id,
+     name,
+     email
+   }) => {
+     setFriendRequests((prev) => [...prev, { _id, name,email }])
+   }
+    pusherClient.bind("add_event",friendRequestHandler)
     return () => {
-      pusherClient.unsubscribe("add_channel")
-      pusherClient.unbind("add_event", friendRequestHandler)
+      pusherClient.unsubscribe('add_channel')
+      pusherClient.unbind('add_event',friendRequestHandler)
     }
-  }, [sessionId])
+  })
+ 
+
 
   const acceptFriend = async (senderId) => {
     try {
