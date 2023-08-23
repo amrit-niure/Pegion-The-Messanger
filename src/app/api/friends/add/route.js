@@ -3,6 +3,7 @@ import Users from "@/modal/UserSchema";
 import { NextResponse } from "next/server"
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from "next-auth/next"
+import { pusherServer } from "@/lib/pusherServer";
 
 
 export async function POST(req) {
@@ -54,14 +55,26 @@ export async function POST(req) {
     if (AlreadyHasRequest) {
         return NextResponse.json({ status: 'success', message: `Your already have ${requestedUser.name} request!` }, { status: 401 });
     }
- 
+
     // check if they are already friends 
-     const areFriends = session_user.friends.some(
+    const areFriends = session_user.friends.some(
         (request) => request._id.toString() === requestedUser._id.toString()
     );
     if (areFriends) {
         return NextResponse.json({ status: 'success', message: `Your are already friends with ${requestedUser.name} ` }, { status: 401 });
     }
- await Users.findByIdAndUpdate(user.id, { $push: { incoming_request: session.user.id } }, { new: true, useFindAndModify: false })
+        // realtime functionality before saving it to database
+        pusherServer.trigger("add_channel","add_event",{
+            _id: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+        })
+
+    await Users.findByIdAndUpdate(user.id, { $push: { incoming_request: session.user.id } }, { new: true, useFindAndModify: false })
+
+
+
+
+
     return NextResponse.json({ status: 'success', message: `Request succesfully sent to ${requestedUser.name} ` }, { status: 200 });
 }

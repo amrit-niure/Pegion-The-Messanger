@@ -1,4 +1,5 @@
 'use client'
+import { pusherClient } from '@/lib/pusherServer'
 import { User } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
@@ -11,6 +12,25 @@ const FriendRequestSidebarOptions = ({
   const [unseenRequestCount, setUnseenRequestCount] = useState(
     initialUnseenRequestCount
   )
+
+  const friendRequestHandler = () => {
+    setUnseenRequestCount((prev) => prev + 1)
+  }
+  const acceptDenyHandler = () => {
+    setUnseenRequestCount((prev) => prev - 1)
+  }
+  useEffect(() => {
+    pusherClient.subscribe('add_channel')
+    pusherClient.subscribe('two_channel')
+    pusherClient.bind("add_event", friendRequestHandler)
+    pusherClient.bind("accept_deny_event", acceptDenyHandler)
+    return () => {
+      pusherClient.unsubscribe("add_channel")
+      pusherClient.unsubscribe("two_channel")
+      pusherClient.unbind("add_event", friendRequestHandler)
+      pusherClient.unbind("accept_deny_event", acceptDenyHandler)
+    }
+  }, [sessionId])
 
   return (
     <Link

@@ -28,14 +28,16 @@ const Layout = async ({ children }) => {
         throw new Error(`Fetch failed with status ${response.status}`);
       }
       const data = await response.json();
-      return data.friends
+      return data
     } catch (error) {
       console.error("Fetch error:", error);
       return 'Fetch Error';
     }
   }
 
-  const friends = await fetchData();
+  const fetchedData = await fetchData();
+  const unseenRequestCount = fetchedData.requests.length
+  const friends = fetchedData.friends
   // console.log("Dashboard Layout (Friends) :",friends)
   if (!session) notFound();
   return (
@@ -79,7 +81,7 @@ const Layout = async ({ children }) => {
                 <li>
                   <FriendRequestSidebarOptions
                     sessionId={session.user.id}
-                    initialUnseenRequestCount={2}
+                    initialUnseenRequestCount={unseenRequestCount}
                   />
                 </li>
               </ul>
