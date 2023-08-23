@@ -112,7 +112,7 @@ const Layout = async ({ children }) => {
           </ul>
         </nav>
       </div>
-      <div className='py-8 px-16 dark:bg-slate-900 w-full'>
+      <div className='py-8 px-16 bg-slate-100 dark:bg-slate-900 w-full'>
 
         {children}
       </div>
