@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-const ChatInput= ({ chatPartner,chatId }) => {
+const ChatInput= ({ chatPartner,chatPartnerId }) => {
   const textareaRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false)
   const [input, setInput] = useState("");
@@ -13,8 +13,7 @@ const ChatInput= ({ chatPartner,chatId }) => {
     setIsLoading(true)
     try {
         // await new Promise((resolve) => setTimeout(resolve ,1000))
-        // await axios.post('/api/message/send',{text:input , chatId})
-        alert("Hitting endpoint to send message")
+        await axios.post('/api/message/send',{content:input , recipientId: chatPartnerId})
         setInput('')
         textareaRef.current?.focus()
     } catch (error) {

@@ -23,7 +23,7 @@ const [friendsList, setFriendsList] = useState(friends)
 
 
   return <ul role='list' className='max-[25rem] overflow-y-auto -mx-2 space-y-1 '>
-{friends.sort().map((friend) =>{
+{friends?.sort().map((friend) =>{
     const unseenMessagesCount = unseenMessages.filter((unseenMsg)=>{
         return unseenMsg._id = friend._id
     }).length

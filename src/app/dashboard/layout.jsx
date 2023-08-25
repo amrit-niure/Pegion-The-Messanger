@@ -36,7 +36,7 @@ const Layout = async ({ children }) => {
   }
 
   const fetchedData = await fetchData();
-  const unseenRequestCount = fetchedData.requests.length
+  const unseenRequestCount = fetchedData.requests?.length
   const friends = fetchedData.friends
   // console.log("Dashboard Layout (Friends) :",friends)
   if (!session) notFound();

@@ -1,4 +1,5 @@
 import ChatInput from '@/components/ChatInput';
+import Messages from '@/components/Messages';
 import { authOptions } from '@/lib/auth';
 import axios from 'axios';
 import { getServerSession } from 'next-auth';
@@ -17,10 +18,17 @@ const Chats = async ({ params }) => {
     return notFound();
   }
   const chatPartnerId = user.id == userId1 ? userId2 : userId1;
+  const chatPartnerResponse = await axios.get(`http://localhost:3000/api/friends/${chatPartnerId}`)
+  const chatPartner = chatPartnerResponse.data.user
 
-  const response = await axios.get(`http://localhost:3000/api/friends/${chatPartnerId}`)
-  const chatPartner = response.data.user
-  console.log(chatPartner)
+  // initial messages : 
+  try {
+    
+    const initialMessages = await axios.get(`http://localhost:3000/api/initialmessages/${chatId}`)
+  } catch (error) {
+    console.log("Error Here : ",error)
+  }
+  // console.log(initialMessages)
   return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
     <div className='flex sm:items-center justify-between py-3 border-b-2 border-gray-200'>
@@ -48,13 +56,13 @@ const Chats = async ({ params }) => {
         </div>
       </div>
     </div>
-    {/* <Messages 
+    <Messages
     chatPartner={chatPartner} 
     sessionImg={session.user.image} 
-    initialMessages={initialMessages} 
+    // initialMessages={initialMessages} 
     sessionId={session.user.id}
-    /> */}
-    <ChatInput chatPartner={chatPartner} chatId={chatId} />
+    />
+    <ChatInput chatPartner={chatPartner} chatPartnerId={chatPartnerId} />
   </div>
   )
 }
