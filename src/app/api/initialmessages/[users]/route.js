@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
     const [userId1, userId2] = users.split('--')
     const user = session.user.id === userId1 ? userId1 : userId2
     const partner = user === userId1 ? userId2 : userId1
-    const allChats = await Chat.find({}).populate('messages')
+    const allChats = await Chat.find({}).populate('messages') // this is causing the schema error 
     // Filter chats where both user and partner are participants
     const filteredChats = allChats.filter(chat =>
         chat.participants.includes(user) && chat.participants.includes(partner)

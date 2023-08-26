@@ -1,21 +1,24 @@
 import FriendRequests from '@/components/FriendRequest';
 import { authOptions } from '@/lib/auth';
+import axios from 'axios';
 import { getServerSession } from 'next-auth';
+import { cookies } from 'next/headers';
 import React from 'react'
 
 const Requests = async () => {
   const session = await getServerSession(authOptions)
   if (!session) notFound()
-
+  const cookie = cookies().get('next-auth.session-token')
   async function friendRequest() {
     try {
-      const response = await fetch(`http://localhost:3000/api/friends/${session.user.id}`);
+      const response = await axios(`http://localhost:3000/api/friends/${session.user.id}`, {
+        headers: {
+          Cookie: `${cookie.name}=${cookie.value}`
+        }
+      });
+      console.log('Response data request ',response.data.requests)
+      return response.data.requests
 
-      if (!response.ok) {
-        throw new Error(`Fetch failed with status ${response.status}`);
-      }
-      const data = await response.json();
-      return data.requests
     } catch (error) {
       console.error("Fetch error:", error);
       return 'Fetch Error';
@@ -23,6 +26,7 @@ const Requests = async () => {
   }
 
   const requests = await friendRequest();
+  console.log('Request : ',requests)
   // console.log('Dashboard Request (Request) :', requests)
 
   return (

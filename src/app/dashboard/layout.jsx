@@ -9,9 +9,11 @@ import Link from 'next/link';
 import React from 'react'
 import axios from 'axios';
 import SidebarChatList from '@/components/SidebarChatList';
+import { cookies } from 'next/headers';
 
 const Layout = async ({ children }) => {
   const session = await getServerSession(authOptions);
+  const cookie = cookies().get('next-auth.session-token')
   const sidebarOptions = [
     {
       id: 1,
@@ -22,13 +24,13 @@ const Layout = async ({ children }) => {
   ];
   async function fetchData() {
     try {
-      const response = await fetch(`http://localhost:3000/api/friends/${session.user.id}`);
-
-      if (!response.ok) {
-        throw new Error(`Fetch failed with status ${response.status}`);
-      }
-      const data = await response.json();
-      return data
+      const response = await axios(`http://localhost:3000/api/friends/${session.user.id}`,{
+        headers : {
+          Cookie: `${cookie.name}=${cookie.value}`
+        }
+      });
+     
+      return response.data
     } catch (error) {
       console.error("Fetch error:", error);
       return 'Fetch Error';

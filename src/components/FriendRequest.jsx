@@ -66,14 +66,14 @@ const FriendRequests = ({
 
     router.refresh()
   }
-
+// console.log("Friend Request ",friendRequests)
   return (
     <>
       <Toaster />
-      {friendRequests.length === 0 ? (
+      {friendRequests?.length === 0 ? (
         <p className='text-sm text-zinc-500'>No friend requests...</p>
       ) : (
-        friendRequests.map((request) => (
+        friendRequests?.map((request) => (
           <div key={request._id} className='flex gap-4 items-center'>
             <UserPlus className='text-black' />
 

@@ -11,20 +11,20 @@ const Chats = async ({ params }) => {
   const { chatId } = params;
   const session = await getServerSession(authOptions);
   if (!session) notFound();
-
+  const cookie = cookies().get('next-auth.session-token')
   const { user } = session;
   const [userId1, userId2] = chatId.split("--");
   if (user.id !== userId1 && user.id !== userId2) {
     return notFound();
   }
   const chatPartnerId = user.id == userId1 ? userId2 : userId1;
-  const chatPartnerResponse = await axios.get(`http://localhost:3000/api/friends/${chatPartnerId}`)
+  const chatPartnerResponse = await axios.get(`http://localhost:3000/api/friends/${chatPartnerId}`, {
+    headers: {
+      Cookie: `${cookie.name}=${cookie.value}`
+    }})
   const chatPartner = chatPartnerResponse.data.user
 
   // initial messages : 
-
-
-  const cookie = cookies().get('next-auth.session-token')
   const initialMessages = await axios.get(`http://localhost:3000/api/initialmessages/${chatId}`, {
     headers: {
       Cookie: `${cookie.name}=${cookie.value}`
