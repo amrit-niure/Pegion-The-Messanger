@@ -5,6 +5,8 @@ import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import UnseenChatToast from '@/components/unseenChatToast';
+import { toast } from 'react-hot-toast';
 
 
 const SidebarChatList = ({ friends, sessionId }) => {
@@ -12,16 +14,51 @@ const SidebarChatList = ({ friends, sessionId }) => {
   const pathname = usePathname()
   const [unseenMessages, setunseenMessages] = useState([])
   const [friendsList, setFriendsList] = useState(friends)
-  // useEffect(() =>{
-  //    if(pathname?.includes('chat')){
-  //     setunseenMessages((prev) => {
-  //         return prev.filter((msg) => !pathname.includes(msg.senderId))
-  //     })
-  //    }
-  // },[pathname])
+
+const newFriendHandler = (newFriend) => {
+  router.refresh()
+  // setFriendsList((prev) => [...prev, newFriend.friend]) //need to work on it
+  console.log(newFriend)
+}
+const chatHandler = (message) => {
+const shouldNotify = pathname !== `dashboard/chat/${chatHerfConstructor(sessionId,message.sender)}`
+if(!shouldNotify) return 
+toast.custom((t) => (
+  <UnseenChatToast 
+  t={t}
+  sessionId={sessionId}
+  senderId = {message.sender}
+  senderImg = {message.senderImg}
+  senderMessage = {message.content}
+  senderName = {message.senderName}
+  />
+))
+setunseenMessages((prev) => [...prev,message])
+}
+// this is for pop up notification purpose
+useEffect(() => {
+  pusherClient.subscribe("user_chats_channel")
+  pusherClient.subscribe("accept_deny_channel")
+
+  pusherClient.bind("notify_message",chatHandler)
+  pusherClient.bind("accept_deny_event",newFriendHandler)
+
+  return () => {
+    pusherClient.unsubscribe("user_chats_channel")
+    pusherClient.unsubscribe("add_channel")
+  }
+})
+
+  useEffect(() =>{
+     if(pathname?.includes('chat')){
+      setunseenMessages((prev) => {
+          return prev.filter((msg) => !pathname.includes(msg.senderId))
+      })
+     }
+  },[pathname,sessionId,router])
 
   return <ul role='list' className='max-[25rem] overflow-y-auto -mx-2 space-y-1 '>
-    {friends?.sort().map((friend) => {
+    {friendsList?.sort().map((friend) => {
       const unseenMessagesCount = unseenMessages.filter((unseenMsg) => {
         return unseenMsg._id = friend._id
       }).length

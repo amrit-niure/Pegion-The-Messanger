@@ -4,16 +4,18 @@ import TextareaAutosize from "react-textarea-autosize";
 import Button from "@/components/Button";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
-const ChatInput= ({ chatPartner,chatPartnerId }) => {
+import { useSession } from "next-auth/react";
+const ChatInput= ({ chatPartner,chatPartnerId,chatId }) => {
+  const session = useSession()
   const textareaRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false)
   const [input, setInput] = useState("");
   const sendMessage = async () => {
     setIsLoading(true)
     try {
+      if(!input) return
         // await new Promise((resolve) => setTimeout(resolve ,1000))
-        await axios.post('/api/message/send',{content:input , recipientId: chatPartnerId})
+        await axios.post('/api/message/send',{content:input , recipientId: chatPartnerId, chatId })
         setInput('')
         textareaRef.current?.focus()
     } catch (error) {

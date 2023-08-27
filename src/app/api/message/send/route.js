@@ -8,11 +8,16 @@ import { NextResponse } from "next/server"
 
 export async function POST(req) {
   const session = await getServerSession(authOptions)
-  const { content, recipientId } = await req.json()
+  const { content, recipientId ,chatId} = await req.json()
   if (!session) return new Response('Unauthorized', { status: 401 })
 
   // check if the same user is trying to send message to itself 
   if (recipientId === session.user.id) return NextResponse.json({ msg: "You cannot send message to yourself" }, { status: 401 })
+  const [userId1, userId2] = chatId.split('--')
+
+  if (session.user.id !== userId1 && session.user.id !== userId2) {
+    return new Response('Unauthorized',{ status: 401 })
+  }
 
   try {
     // check if the sender even exist
@@ -27,12 +32,26 @@ export async function POST(req) {
 
     const savedMessage = new Messages({
       sender: sender._id,
-      content: content
+      content: content,
+      createdAt : Date.now()
     })
     // realtime :
-    pusherServer.trigger("message_channel", "message_event", {
-     savedMessage
-    })
+    // notify all connedted chat room clients
+    if(chatId === `${recipientId}--${sender._id}` || `${sender._id}--${recipientId}`){
+      pusherServer.trigger("message_channel", "message_event", {
+       ...savedMessage,recipientId,prevChatId : chatId
+      })
+    }
+    // for only one
+    if(recipientId === session.user.id){
+      pusherServer.trigger("user_chats_channel","notify_message",{
+        content : content, 
+        sender: sender._id,
+        senderImg : sender.image,
+        senderName : sender.name,
+        createdAt : savedMessage.created
+      })
+    }
     // save message
     await savedMessage.save()
     let chat = await Chat.findOne({ participants: { $all: [sender._id, recipient._id] } });

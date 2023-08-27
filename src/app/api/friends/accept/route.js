@@ -26,7 +26,9 @@ export async function POST(req) {
         return NextResponse.json({ status: 'success', message: `Your both are already friends` }, { status: 401 });
     }
     //realtime functionality 
-pusherServer.trigger("accept_deny_channel","accept_deny_event",{})
+pusherServer.trigger("accept_deny_channel","accept_deny_event",{
+    friend
+})
 
     try {
         await Users.findByIdAndUpdate(

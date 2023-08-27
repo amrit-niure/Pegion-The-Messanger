@@ -58,17 +58,18 @@ const Chats = async ({ params }) => {
           </div>
         </div>
       </div>
-      <div className='h-full'>
+   
         <Messages
           chatPartner={chatPartner}
+          chatId = {chatId}
           sessionImg={session.user.image}
           initialMessages={messages}
           sessionId={session.user.id}
         />
-      </div>
-      <div>
-        <ChatInput chatPartner={chatPartner} chatPartnerId={chatPartnerId} />
-      </div>
+
+  
+        <ChatInput chatPartner={chatPartner} chatPartnerId={chatPartnerId} chatId={chatId} />
+  
     </div>
   )
 }

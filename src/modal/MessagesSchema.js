@@ -1,3 +1,4 @@
+import { Timestamp } from "mongodb";
 import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
@@ -10,10 +11,8 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  timestamp: {
-    type: Date,
-    default: Date.now()
-  }
+},{
+  timestamps: true // Automatically adds createdAt and updatedAt fields
 });
 
 const Messages = mongoose.models.Messages || mongoose.model('Messages', messageSchema);

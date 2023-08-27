@@ -6,36 +6,47 @@ import { format, parseISO } from 'date-fns'
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
 
-const Messages = ({ initialMessages, sessionId, chatPartner, sessionImg }) => {
+const Messages = ({ initialMessages, sessionId, chatPartner, sessionImg, chatId }) => {
 
+  const [user1, user2] = chatId.split('--')
   const [messages, setMessages] = useState(initialMessages.reverse())
-  useEffect(() =>{
-    pusherClient.subscribe("message_channel")
-    const messageHandler = ({
-   savedMessage
-   }) => {
-     setMessages((prev) => [savedMessage,...prev])
-   }
-    pusherClient.bind("message_event",messageHandler)
-    return () => {
-      pusherClient.unsubscribe('message_channel')
-      pusherClient.unbind('message_event',messageHandler)
-    }
-  })
-  console.log(messages)
+  // if(sessionId ===  user2){
+    useEffect(() => {
+      pusherClient.subscribe("message_channel")
+      // 
+      const messageHandler = ({recipientId ,_doc:savedMessage,prevChatId}) => {
+        if(chatId === prevChatId){
+          setMessages((prev) => [savedMessage, ...prev])
+        }
+      }
+
+      pusherClient.bind("message_event", messageHandler)
+      return () => {
+        pusherClient.unsubscribe('message_channel')
+        pusherClient.unbind('message_event', messageHandler)
+      }
+    }, [chatId])
+  // }
+
+
+  
 
   const scrollDownRef = useRef(null)
 
   const formatTimestamp = (timestamp) => {
+    if (!timestamp) {
+      return ''; // or some default value
+    }
+
     return format(parseISO(timestamp), 'HH:mm')
   }
   return (
     <div
       id='messages'
-      className='flex h-full flex-1 flex-col-reverse  gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
+      className=' dark flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch dark:scrollbar-track-blue-lighter-dark dark:scrollbar-thumb-blue-dark'>
       <div ref={scrollDownRef} />
 
-      {messages.map((message, index) => {
+      {messages?.map((message, index) => {
         const isCurrentUser = message.sender === sessionId
 
         const hasNextMessageFromSameUser =
@@ -44,7 +55,7 @@ const Messages = ({ initialMessages, sessionId, chatPartner, sessionImg }) => {
         return (
           <div
             className='chat-message '
-            key={`${message.id}-${message.timestamp}`}>
+            key={`${message._id}-${message.createdAt}`}>
             <div
               className={cn('flex items-end', {
                 'justify-end': isCurrentUser,
@@ -68,7 +79,8 @@ const Messages = ({ initialMessages, sessionId, chatPartner, sessionImg }) => {
                   })}>
                   {message.content}{' '}
                   <span className='ml-2 text-xs text-gray-400'>
-                    {formatTimestamp(message.timestamp)}
+                    {formatTimestamp(message.createdAt)}
+
                   </span>
                 </span>
               </div>
