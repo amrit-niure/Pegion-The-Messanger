@@ -10,7 +10,7 @@ const AddFriend = () => {
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
-      const res = await axios.post('http://localhost:3000/api/friends/add', values)
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_ENDPOINT}/api/friends/add`, values)
       console.log("Frontend Response : ", res)
       toast.success("Friend Request Sent !")
       onSubmitProps.resetForm()
