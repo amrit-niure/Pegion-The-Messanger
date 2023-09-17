@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import React from 'react'
 import { cookies } from 'next/headers'
+
 const Chats = async ({ params }) => {
   const { chatId } = params;
   const session = await getServerSession(authOptions);

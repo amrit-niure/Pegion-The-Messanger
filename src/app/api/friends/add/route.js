@@ -7,7 +7,6 @@ import { pusherServer } from "@/lib/pusherServer";
 
 
 export async function POST(req) {
-    console.log(req)
     const { email } = await req.json()
     console.log(email)
     const session = await getServerSession(authOptions)
