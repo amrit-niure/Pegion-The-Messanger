@@ -103,15 +103,3 @@ const FriendRequests = ({
 
 export default FriendRequests
 
-// import React from 'react'
-
-// const FriendRequest = ({
-//     incomingFriendRequests,
-//     sessionId,
-// }) => {
-//     return (
-//         <div>FriendRequest of {sessionId}</div>
-//     )
-// }
-
-// export default FriendRequest

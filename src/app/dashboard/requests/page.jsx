@@ -11,7 +11,7 @@ const Requests = async () => {
   const cookie = cookies().get('next-auth.session-token')
   async function friendRequest() {
     try {
-      const response = await axios(`http://localhost:3000/api/friends/${session.user.id}`, {
+      const response = await axios(`${process.env.NEXT_PUBLIC_ENDPOINT}/api/friends/${session.user.id}`, {
         headers: {
           Cookie: `${cookie.name}=${cookie.value}`
         }

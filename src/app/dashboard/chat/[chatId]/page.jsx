@@ -18,14 +18,14 @@ const Chats = async ({ params }) => {
     return notFound();
   }
   const chatPartnerId = user.id == userId1 ? userId2 : userId1;
-  const chatPartnerResponse = await axios.get(`http://localhost:3000/api/friends/${chatPartnerId}`, {
+  const chatPartnerResponse = await axios.get(`${process.env.NEXT_PUBLIC_ENDPOINT}/api/friends/${chatPartnerId}`, {
     headers: {
       Cookie: `${cookie.name}=${cookie.value}`
     }})
   const chatPartner = chatPartnerResponse.data.user
 
   // initial messages : 
-  const initialMessages = await axios.get(`http://localhost:3000/api/initialmessages/${chatId}`, {
+  const initialMessages = await axios.get(`${process.env.NEXT_PUBLIC_ENDPOINT}/api/initialmessages/${chatId}`, {
     headers: {
       Cookie: `${cookie.name}=${cookie.value}`
     }
